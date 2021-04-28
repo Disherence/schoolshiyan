@@ -1,0 +1,91 @@
+ORG 0000H
+SJMP MAIN
+ORG 0030H
+MAIN:MOV A,#0
+          MOV DPTR,#8002H
+          MOVX @DPTR,A
+          MOV DPTR,#8001H
+          MOVX A,@DPTR
+          CPL A
+          ANL A,#0FH
+          MOV 30H,A
+          JZ MAIN
+          MOV DPTR,#8002H
+          MOVX @DPTR,A
+          MOV DPTR,#8001H
+          MOVX A,@DPTR
+          CPL A
+          ANL A,#0FH
+          JZ MAIN
+          CJNE A,30H,MAIN
+          MOV 20H,#0
+          MOV 21H,#0
+          MOV A,#0DFH
+          MOV R7,#4
+          MOV 22H,A
+CONT1:MOV DPTR,#8002H
+            MOVX @DPTR,A
+            MOV DPTR,8001H
+            MOVX A,@DPTR
+            JB ACC.0,NEXT1
+            MOV 21H,#0
+            SJMP EXIT
+NEXT1:JB ACC.1,NEXT2
+           MOV 21H,#1
+           SJMP EXIT
+NEXT2:JB ACC.2,NEXT3
+           MOV 21H,#4
+           SJMP EXIT
+NEXT3:JB ACC.3,NEXT4
+           MOV 21H,#7
+           SJMP EXIT
+NEXT4:MOV A,22H
+           RR A
+           MOV 22H,A
+           INC 20H
+           DJNZ R7,CONT1
+EXIT:MOV A,21H
+        CJNE A,#0,XX1
+        SJMP SS
+XX:MOV A,21H
+     ADD A,20H
+XS:MOV 30H,A
+     MOV DPTR,#8002H
+     MOV A,#01H
+     MOVX @DPTR,A
+     MOV A,30H
+     MOV DPTR,#TAB
+     MOVC A,@A+DPTR
+     MOV DPTR,#8004H
+     MOVX @DPTR,A
+     MOV R6,#250
+     DJNZ R6,$
+     MOV A,#0
+     MOVX @DPTR,A
+     SJMP MAIN
+SS:MOV A,20H
+     CJNE A,#3,JJ
+     MOV A,#0DH
+     SJMP XS
+JJ:CJNE,#2,JJ1
+   MOV A,#0EH
+   SJMP XS
+JJ1:CJNE A,#1,XX
+     MOV A,#0FH
+     SJMP XS
+XX1:MOV A,20H
+       CJNE A,#3,XX
+       MOV A,21H
+       CJNE A,#1,XY1
+       MOV A,#0CH
+       SJMP XS
+XY1:CJNE A,#4,XY2
+       MOV A,#0BH
+       SJMP XS
+XY2:CJNE A,#7,XX
+       MOV A,#0AH
+       SJMP XS
+
+
+
+
