@@ -1,10 +1,10 @@
 #include <reg52.h>
 #define uint unsigned int
 #define uchar unsigned char
-sbit S1=P3^4;
-sbit S2=P3^5;
+sbit S0=P3^0;
+sbit S1=P3^1;
+sbit S2=P3^2;
 sbit S3=P3^3;
-sbit S4=P3^1;
 void san();
 void wu();
 void delay(uint);
