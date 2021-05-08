@@ -1,22 +1,26 @@
-A=rgb2gray(imread('pic.jpg'));
-subplot(221);imshow(A);title("原图像")
+A = rgb2gray(imread('pic.jpg'));
+A = im2double(A);
+subplot(221); imshow(A); title("原图像")
 
-LEN=30;THEAT=45;
-PSF=fspecial('motion',LEN,THEAT);
-MF=imfilter(A,PSF,'circular','conv');
-subplot(222);imshow(MF);title("运动模糊图像")
+LEN = 30; THEAT = 45;
+PSF = fspecial('motion', LEN, THEAT);
+MF = imfilter(A, PSF, 'circular', 'conv');
+subplot(222); imshow(MF); title("运动模糊图像")
 
-imwrite(MF,'pic2.jpg');
+imwrite(MF, 'pic2.jpg');
 
 % 估计函数复原
 
-% 维纳滤波复原
-MF=im2double(MF);
-noise=imnoise(zeros(size(MF)),'gaussian');
-MFN=MF+noise;
+% 逆滤波和维纳滤波复原
+m = 0;
+noise_var = 0.0001;
+MFN = imnoise(MF, 'gaussian', m, noise_var);
 figure();
-subplot(221);imshow(MF,[]);title("运动模糊图像")
-subplot(222);imshow(MFN,[]);title("运动模糊加高斯")
-NSR=sum(noise(:).^2)/sum(MFN(:).^2);
-subplot(223);imshow(deconvwnr(MFN,PSF),[]);title("逆滤波")
-subplot(224);imshow(deconvwnr(MFN,PSF,NSR),[]);title("维纳滤波")
+subplot(221); imshow(MFN); title('高斯和运动模糊');
+
+nilvbo = deconvwnr(MFN, PSF, 0);
+subplot(222); imshow(nilvbo); title('逆滤波')
+
+NSR = noise_var / var(A(:));
+weina = deconvwnr(MFN, PSF, NSR);
+subplot(223), imshow(weina); title('维纳滤波');
