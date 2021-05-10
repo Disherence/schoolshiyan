@@ -11,6 +11,11 @@ imwrite(MF, 'pic2.jpg');
 
 % 估计函数复原
 
+[MF,map]=imread('pic2.jpg');
+[J,P]=deconvblind(MF,PSF,LEN);
+subplot(223);imshow(J);title('复原图像结果');
+subplot(224);imshow(P,[]);title('复原点扩散函数');
+
 % 逆滤波和维纳滤波复原
 m = 0;
 noise_var = 0.0001;
